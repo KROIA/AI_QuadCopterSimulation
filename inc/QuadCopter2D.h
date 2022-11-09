@@ -17,7 +17,23 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
         ~QuadCopter2D();
         CLONE_FUNC(QuadCopter2D)
 
+        void setPause(bool pause);
+
         void update() override;
+        void checkCollision();
+
+        bool getGroundWasHit() const;
+        float getAngle();
+        sf::Vector2f getUpVector();
+        Force getAcceleration();
+        Force getSpeed();
+        float getHeight();
+        sf::Vector2f getPosition();
+        void setPosition(const Force &pos);
+        void setSpeed(const Force &speed);
+
+
+        void setMotorForce(float left, float right);
 
     protected:
 
@@ -27,6 +43,8 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
         void onLeftKeyRising();
         void onRightKeyRising();
 
+        void onNoiseKeyPressed();
+
     private:
         Force getCenteredForce();
 
@@ -35,7 +53,7 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
 
         QSFML::Components::KeyPressEvent *m_leftKey;
         QSFML::Components::KeyPressEvent *m_rightKey;
-
+        QSFML::Components::KeyPressEvent *m_noiseKey;
 
         QuadCopterFrame2D *m_frame;
         Motor2D *m_motorLeft;
@@ -45,6 +63,14 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
         Force m_velocity;
         Force m_pos;
         float m_deltaT;
+        float m_groundHeight;
+        float m_sealingHeight;
+        float m_leftWallPos;
+        float m_rightWallPos;
+        bool m_paused;
+        bool m_groundWasHit;
+
+        Force m_noiseForce;
 
         class QuadCopter2DPainter: public QSFML::Components::Drawable
         {

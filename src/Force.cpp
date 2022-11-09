@@ -30,24 +30,24 @@ const Force &Force::operator=(const Force &other)
 }
 const Force Force::operator+(const Force &other)
 {
-    sf::Vector2f newOrigin = (other.m_actingPoint - m_actingPoint)*0.5f;
+    sf::Vector2f newOrigin = (other.m_actingPoint + m_actingPoint)*0.5f;
     return Force(newOrigin, m_force + other.m_force, m_torque + other.m_torque);
 }
 const Force Force::operator-(const Force &other)
 {
-    sf::Vector2f newOrigin = (other.m_actingPoint - m_actingPoint)*0.5f;
+    sf::Vector2f newOrigin = (other.m_actingPoint + m_actingPoint)*0.5f;
     return Force(newOrigin, m_force - other.m_force, m_torque - other.m_torque);
 }
 const Force &Force::operator+=(const Force &other)
 {
-    m_actingPoint = (other.m_actingPoint - m_actingPoint)*0.5f;
+    m_actingPoint = (m_actingPoint + other.m_actingPoint)*0.5f;
     m_force += other.m_force;
     m_torque += other.m_torque;
     return *this;
 }
 const Force &Force::operator-=(const Force &other)
 {
-    m_actingPoint = (other.m_actingPoint - m_actingPoint)*0.5f;
+    m_actingPoint = (m_actingPoint + other.m_actingPoint)*0.5f;
     m_force -= other.m_force;
     m_torque -= other.m_torque;
     return *this;

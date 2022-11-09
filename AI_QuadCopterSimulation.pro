@@ -18,6 +18,8 @@ INCLUDEPATH +=  $$inc
 
 HEADERS += \
     $$inc/mainwindow.h \
+    inc/AI_Controller.h \
+    inc/AI_trainer.h \
     inc/Force.h \
     inc/Motor2D.h \
     inc/QuadCopter2D.h \
@@ -26,6 +28,8 @@ HEADERS += \
 SOURCES += \
     $$src/main.cpp \
     $$src/mainwindow.cpp \
+    src/AI_Controller.cpp \
+    src/AI_Trainer.cpp \
     src/Force.cpp \
     src/Motor2D.cpp \
     src/QuadCopter2D.cpp \

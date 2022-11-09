@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "QuadCopter2D.h"
+#include "AI_trainer.h"
 using namespace QSFML;
 using namespace QSFML::Objects;
 
@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     Components::DrawableVector::setInvertedYAxis(false);
-    setupAIModel();
+   // setupAIModel();
     setupSimulation();
 }
 
@@ -40,14 +40,15 @@ void MainWindow::setupSimulation()
     //settings.layout.autoAjustSize = false;
     settings.layout.fixedSize = sf::Vector2u(300,100);
     settings.contextSettings.antialiasingLevel = 8;
+    settings.timing.frameTime = 0;
     m_simulationCanvas = new Canvas(ui->simulationViewport,settings);
 
-    DefaultEditor *defaultEditor = new DefaultEditor();
+    DefaultEditor *defaultEditor = new DefaultEditor("Editor",sf::Vector2f(2000,600));
 
     m_simulationCanvas->addObject(defaultEditor);
 
-    QuadCopter2D *copter = new QuadCopter2D();
+    AI_Trainer *trainer = new AI_Trainer();
     //motor->setRotation(M_PI_2 * 0.5f);
-    m_simulationCanvas->addObject(copter);
+    m_simulationCanvas->addObject(trainer);
 }
 
