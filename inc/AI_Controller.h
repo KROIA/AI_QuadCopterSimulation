@@ -16,6 +16,7 @@ class AI_Controller: public QObject, public QSFML::Objects::CanvasObject
 
         size_t getInputSize();
 
+        //oid setAiControlled(bool enable);
         void setPause(bool pause);
         void enableNetDisplay(bool enable);
 
@@ -31,12 +32,29 @@ class AI_Controller: public QObject, public QSFML::Objects::CanvasObject
         float getAngleError();
 
 
+
+    private slots:
+        /*void onUpPressed();
+        void onLeftPressed();
+        void onDownPressed();
+        void onRightPressed();
+        void onRightTurn();
+        void onLeftTurn();*/
     private:
         float calculateDeltaScore();
+        float getBounded(float value, float min=-1, float max=1);
 
         QuadCopter2D *m_copter;
         NeuronalNet::Net *m_net;
         NeuronalNet::Graphics::NetModel *m_netModel;
+/*
+        QSFML::Components::KeyPressEvent *m_keyW;
+        QSFML::Components::KeyPressEvent *m_keyA;
+        QSFML::Components::KeyPressEvent *m_keyS;
+        QSFML::Components::KeyPressEvent *m_keyD;
+        QSFML::Components::KeyPressEvent *m_keyQ;
+        QSFML::Components::KeyPressEvent *m_keyE;
+*/
 
 
         sf::Vector2f m_startPos;
@@ -46,5 +64,9 @@ class AI_Controller: public QObject, public QSFML::Objects::CanvasObject
         float m_targetAngle;
 
         bool m_paused;
+        //bool m_aiControlled;
+
+        sf::Vector2f m_keyControlledPos;
+        float m_keyControlledAngle;
 
 };

@@ -12,7 +12,17 @@ QuadCopter2D::QuadCopter2D(const std::string &name,
 
     m_forceVec = new ForcePainter();
     //m_forceVec->setColor(sf::Color::Red);
+    m_forceVec->setScale(10);
     addComponent(m_forceVec);
+
+    m_accelerationVec = new ForcePainter();
+    m_accelerationVec->setColor(sf::Color::Green);
+    m_accelerationVec->setScale(100);
+    addComponent(m_accelerationVec);
+    m_velocityVec = new ForcePainter();
+    m_velocityVec->setColor(sf::Color::Blue);
+    m_velocityVec->setScale(10);
+    addComponent(m_velocityVec);
 
 
     m_frame = new QuadCopterFrame2D("Frame");
@@ -42,6 +52,7 @@ QuadCopter2D::QuadCopter2D(const std::string &name,
     m_leftWallPos = 0;
     m_rightWallPos = 2000;
     m_paused = false;
+    m_groundWasHit = false;
 }
 QuadCopter2D::QuadCopter2D(const QuadCopter2D &other)
     : CanvasObject(other)
@@ -89,7 +100,7 @@ void QuadCopter2D::update()
 
     f += gravity + m_noiseForce;
     f.setActingPoint(m_frame->getTopCenterPoint());
-    m_forceVec->setForce(f);
+
 
     //m_forceVec->setStart(m_frame->getTopCenterPoint());
     //m_forceVec->setDirection(getCenteredForce().getForceVector());
@@ -104,12 +115,16 @@ void QuadCopter2D::update()
     //qDebug() << m_noiseForce.getTorque();
     m_noiseForce.setForce(0);
     m_noiseForce.setTorque(0);
+
+    m_forceVec->setForce(f);
+    m_accelerationVec->setForce(m_acceleration);
+    m_velocityVec->setForce(m_velocity);
 }
 void QuadCopter2D::checkCollision()
 {
     m_groundWasHit = false;
 
-    if(m_pos.getForceVector().y >= m_groundHeight)
+    if(m_pos.getForceVector().y > m_groundHeight)
     {
         m_pos.setForceVector(sf::Vector2f(m_pos.getForceVector().x, m_groundHeight));
         if(m_velocity.getForceVector().y>0)
@@ -117,17 +132,17 @@ void QuadCopter2D::checkCollision()
         m_velocity.setTorque(0);
         m_pos.setTorque(0);
         m_groundWasHit = true;
-    }else if(m_pos.getForceVector().y <= m_sealingHeight)
+    }else if(m_pos.getForceVector().y < m_sealingHeight)
     {
         m_pos.setForceVector(sf::Vector2f(m_pos.getForceVector().x, m_sealingHeight));
-        if(m_velocity.getForceVector().y>0)
+        if(m_velocity.getForceVector().y<0)
             m_velocity.setForceVector(sf::Vector2f(m_velocity.getForceVector().x, 0));
         m_velocity.setTorque(0);
         m_pos.setTorque(0);
         m_groundWasHit = true;
     }
 
-    if(m_pos.getForceVector().x >= m_rightWallPos)
+    if(m_pos.getForceVector().x > m_rightWallPos)
     {
         m_pos.setForceVector(sf::Vector2f(m_rightWallPos, m_pos.getForceVector().y));
         if(m_velocity.getForceVector().x>0)
@@ -135,10 +150,10 @@ void QuadCopter2D::checkCollision()
         m_velocity.setTorque(0);
         m_pos.setTorque(0);
         m_groundWasHit = true;
-    }else if(m_pos.getForceVector().x <= m_leftWallPos)
+    }else if(m_pos.getForceVector().x < m_leftWallPos)
     {
         m_pos.setForceVector(sf::Vector2f(m_leftWallPos, m_pos.getForceVector().y));
-        if(m_velocity.getForceVector().y>0)
+        if(m_velocity.getForceVector().x<0)
             m_velocity.setForceVector(sf::Vector2f(0, m_velocity.getForceVector().y));
         m_velocity.setTorque(0);
         m_pos.setTorque(0);
@@ -191,7 +206,14 @@ void QuadCopter2D::setMotorForce(float left, float right)
     m_motorLeft->setThrust(left);
     m_motorRight->setThrust(right);
 }
-
+void QuadCopter2D::setPosition(const sf::Vector2f &pos)
+{
+    m_pos.setForceVector(pos);
+}
+void QuadCopter2D::setAngle(float angle)
+{
+    m_pos.setTorque(angle);
+}
 void QuadCopter2D::onLeftKeyFalling()
 {
     m_motorLeft->setThrust(10);

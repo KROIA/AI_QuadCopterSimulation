@@ -31,6 +31,8 @@ class Force
         float getTorque() const;
         float getTorque(const sf::Vector2f &onPos) const;
 
+
+
         //Force getOnPosition(const sf::Vector2f &pos);
 
         static Force getSum(const std::vector<Force> &forcefield,
@@ -43,6 +45,7 @@ class Force
         sf::Vector2f m_actingPoint;
         sf::Vector2f m_force;
         float m_torque;  // + is counter clockwise
+
 };
 
 class ForcePainter: public QSFML::Components::Drawable
@@ -52,12 +55,16 @@ class ForcePainter: public QSFML::Components::Drawable
         ForcePainter(const ForcePainter &other);
         CLONE_FUNC(ForcePainter)
 
+        void setColor(const sf::Color &color);
+        void setScale(float scale);
         void setForce(const Force &force);
         void draw(sf::RenderTarget& target,
                   sf::RenderStates states) const override;
 
     private:
+        float m_scale;
         Force m_force;
+        sf::Color m_color;
         QSFML::Components::DrawableVector m_vec;
 
 };

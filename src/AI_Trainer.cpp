@@ -54,9 +54,9 @@ void AI_Trainer::setup()
     }
 
     m_geneticNet = new NeuronalNet::GeneticNet(agentCount);
-    m_geneticNet->setDimensions(inputCount, 2, 20 , 2);
+    m_geneticNet->setDimensions(inputCount, 2, 15 , 2);
     m_geneticNet->setActivation(NeuronalNet::Activation::sigmoid);
-    m_geneticNet->setMutationChance(0.8);
+    m_geneticNet->setMutationChance(1);
     m_geneticNet->setMutationFactor(0.1);
     m_geneticNet->build();
 
@@ -104,7 +104,7 @@ void AI_Trainer::learn()
         average += scores[i];
     }
     average /= (float)m_agents.size();
-    qDebug() << "Average score: "<<average;
+    qDebug() <<average;
     m_geneticNet->learn(scores);
 }
 void AI_Trainer::onPauseToggled()

@@ -86,11 +86,11 @@ sf::Vector2f QuadCopterFrame2D::getUpDir() const
 }
 sf::Vector2f QuadCopterFrame2D::getLeftMotorMount() const
 {
-    return getTopCenterPoint() + m_leftDir*m_motorCenterDistance;
+    return getTopCenterPoint() - m_leftDir*m_motorCenterDistance;
 }
 sf::Vector2f QuadCopterFrame2D::getRightMotorMount() const
 {
-    return getTopCenterPoint() - m_leftDir*m_motorCenterDistance;
+    return getTopCenterPoint() + m_leftDir*m_motorCenterDistance;
 }
 sf::Vector2f QuadCopterFrame2D::getTopCenterPoint() const
 {

@@ -48,7 +48,8 @@ void MainWindow::setupSimulation()
     m_simulationCanvas->addObject(defaultEditor);
 
     AI_Trainer *trainer = new AI_Trainer();
-    //motor->setRotation(M_PI_2 * 0.5f);
     m_simulationCanvas->addObject(trainer);
+    //QuadCopter2D *copter = new QuadCopter2D();
+    //m_simulationCanvas->addObject(copter);
 }
 

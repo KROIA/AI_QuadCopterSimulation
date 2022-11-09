@@ -34,6 +34,8 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
 
 
         void setMotorForce(float left, float right);
+        void setPosition(const sf::Vector2f &pos);
+        void setAngle(float angle);
 
     protected:
 
@@ -50,6 +52,8 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
 
         QuadCopter2DPainter *m_painter;
         ForcePainter *m_forceVec;
+        ForcePainter *m_accelerationVec;
+        ForcePainter *m_velocityVec;
 
         QSFML::Components::KeyPressEvent *m_leftKey;
         QSFML::Components::KeyPressEvent *m_rightKey;

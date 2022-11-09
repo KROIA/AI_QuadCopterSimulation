@@ -134,19 +134,30 @@ Force Force::getSum(const std::vector<Force> &forcefield,
 ForcePainter::ForcePainter(const std::string &name)
     : Drawable(name)
 {
-    m_vec.setColor(sf::Color::Red);
+    setColor(sf::Color::Red);
+    m_scale = 1;
 }
 ForcePainter::ForcePainter(const ForcePainter &other)
     : Drawable(other)
 {
     m_force = other.m_force;
+    m_scale = other.m_scale;
+    m_color = other.m_color;
 }
-
+void ForcePainter::setColor(const sf::Color &color)
+{
+    m_color = color;
+    m_vec.setColor(m_color);
+}
+void ForcePainter::setScale(float scale)
+{
+    m_scale = scale;
+    setForce(m_force);
+}
 void ForcePainter::setForce(const Force &force)
 {
     m_force = force;
-    m_vec.setPoints(m_force.getActingPoint(), m_force.getActingPoint() + m_force.getForceVector());
-
+    m_vec.setPoints(m_force.getActingPoint(), m_force.getActingPoint() + m_force.getForceVector()*m_scale);
 }
 void ForcePainter::draw(sf::RenderTarget& target,
                         sf::RenderStates states) const
@@ -156,20 +167,23 @@ void ForcePainter::draw(sf::RenderTarget& target,
     // Torque
     if(m_force.getTorque() == 0)
         return;
-    size_t resolution = 10;
+
     float radius = 2;
     float radiusOffset = 0.3;
 
+    float deltaAngle = m_force.getTorque()*0.001*m_scale;
+    size_t resolution = 10 + abs(deltaAngle*10);
     sf::Vertex *vertecies = new sf::Vertex[resolution];
     sf::Vector2f pos = m_force.getActingPoint();
-    sf::Color color = sf::Color::Red;
     float angle = 0;
+
+    deltaAngle /= (float)resolution;
     for(size_t i=0; i<resolution; ++i)
     {
-        vertecies[i].color = color;
+        vertecies[i].color = m_color;
         sf::Vector2f f = QSFML::VectorMath::getRotated(sf::Vector2f(1,0) * (radius + radiusOffset*i),angle);
         vertecies[i].position = pos + f;
-        angle += m_force.getTorque()*0.001;
+        angle += deltaAngle;
         //qDebug() << "angle["<<i<<"] = "<<angle << " torque: "<<m_force.getTorque();
     }
     target.draw(vertecies, resolution, sf::LinesStrip);
