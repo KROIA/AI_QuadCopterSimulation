@@ -66,7 +66,6 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
         Force m_acceleration;
         Force m_velocity;
         Force m_pos;
-        float m_deltaT;
         float m_groundHeight;
         float m_sealingHeight;
         float m_leftWallPos;

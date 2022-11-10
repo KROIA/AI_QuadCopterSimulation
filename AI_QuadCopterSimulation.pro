@@ -27,8 +27,11 @@ HEADERS += \
     inc/AI_trainer.h \
     inc/Force.h \
     inc/Motor2D.h \
+    inc/PID.h \
+    inc/PID_Controller.h \
     inc/QuadCopter2D.h \
-    inc/QuadCopterFrame2D.h
+    inc/QuadCopterFrame2D.h \
+    inc/SimulationSettings.h
 
 SOURCES += \
     $$src/main.cpp \
@@ -37,8 +40,11 @@ SOURCES += \
     src/AI_Trainer.cpp \
     src/Force.cpp \
     src/Motor2D.cpp \
+    src/PID.cpp \
+    src/PID_Controller.cpp \
     src/QuadCopter2D.cpp \
-    src/QuadCopterFrame2D.cpp
+    src/QuadCopterFrame2D.cpp \
+    src/SimulationSettings.cpp
 
 
 FORMS += \

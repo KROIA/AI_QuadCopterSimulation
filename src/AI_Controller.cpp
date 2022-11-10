@@ -1,5 +1,5 @@
 #include "AI_Controller.h"
-
+#include "SimulationSettings.h"
 
 AI_Controller::AI_Controller(const std::string &name,
                              CanvasObject *parent)
@@ -256,9 +256,10 @@ float AI_Controller::calculateDeltaScore()
     if(angleScore < 0)
         angleScore = 0;
 
+    float score = heightScore /*+ xPosCore *//*+ yPosCore */+ angleScore*5 /*+ accelerationScore*/;
     //return angleScore;
     //return accelerationScore + velocityScore + angleScore + heightScore*3;
-    return heightScore /*+ xPosCore *//*+ yPosCore */+ angleScore*5 /*+ accelerationScore*/;
+    return score / SimulationSettings::getDeltaT();
 }
 float AI_Controller::getBounded(float value, float min, float max)
 {

@@ -66,7 +66,7 @@ class AI_Controller: public QObject, public QSFML::Objects::CanvasObject
         bool m_paused;
         //bool m_aiControlled;
 
-        sf::Vector2f m_keyControlledPos;
-        float m_keyControlledAngle;
+        //sf::Vector2f m_keyControlledPos;
+        //float m_keyControlledAngle;
 
 };

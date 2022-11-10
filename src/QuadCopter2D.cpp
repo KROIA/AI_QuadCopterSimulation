@@ -1,4 +1,6 @@
 #include "QuadCopter2D.h"
+#include "SimulationSettings.h"
+
 
 
 QuadCopter2D::QuadCopter2D(const std::string &name,
@@ -7,7 +9,6 @@ QuadCopter2D::QuadCopter2D(const std::string &name,
 {
     m_painter = new QuadCopter2DPainter();
     m_painter->m_copter = this;
-    m_deltaT = 0.1;
     addComponent(m_painter);
 
     m_forceVec = new ForcePainter();
@@ -59,7 +60,6 @@ QuadCopter2D::QuadCopter2D(const QuadCopter2D &other)
 {
     m_painter = new QuadCopter2DPainter();
     m_painter->m_copter = this;
-    m_deltaT = 0.1;
     addComponent(m_painter);
 
     m_forceVec = new ForcePainter();
@@ -105,9 +105,9 @@ void QuadCopter2D::update()
     //m_forceVec->setStart(m_frame->getTopCenterPoint());
     //m_forceVec->setDirection(getCenteredForce().getForceVector());
 
-    m_acceleration = f * m_deltaT;
-    m_velocity += m_acceleration * m_deltaT;
-    m_pos += m_velocity * m_deltaT;
+    m_acceleration = f * SimulationSettings::getDeltaT();
+    m_velocity += m_acceleration * SimulationSettings::getDeltaT();
+    m_pos += m_velocity * SimulationSettings::getDeltaT();
 
     checkCollision();
     m_frame->setRotation(m_pos.getTorque()*0.0001+M_PI_2);

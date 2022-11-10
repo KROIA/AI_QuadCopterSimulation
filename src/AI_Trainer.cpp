@@ -1,5 +1,6 @@
 #include "AI_trainer.h"
 #include "canvas/CanvasSettings.h"
+#include "SimulationSettings.h"
 
 AI_Trainer::AI_Trainer(const std::string &name,
                         CanvasObject *parent)
@@ -40,7 +41,7 @@ void AI_Trainer::setup()
     addComponent(m_netDisplayToggle);
 
     m_paused = false;
-    m_maxCycles = 2000;
+    m_maxCycles = 200;
 
     size_t agentCount = 100;
     size_t inputCount = 0;
@@ -89,7 +90,7 @@ void AI_Trainer::update()
     }*/
 
     ++m_cyclesCounter;
-    if(m_cyclesCounter >= m_maxCycles)
+    if(m_cyclesCounter/SimulationSettings::getDeltaT() >= m_maxCycles)
     {
         learn();
         reset();
