@@ -16,12 +16,15 @@ class MainWindow : public QMainWindow
         MainWindow(QWidget *parent = nullptr);
         ~MainWindow();
 
+    private slots:
+        void on_targetFrameTimer_slider_valueChanged(int value);
+
     private:
-        void setupAIModel();
+        //void setupAIModel();
         void setupSimulation();
 
         Ui::MainWindow *ui;
-        QSFML::Canvas *m_aiModelCanvas;
+        //QSFML::Canvas *m_aiModelCanvas;
         QSFML::Canvas *m_simulationCanvas;
 };
 #endif // MAINWINDOW_H

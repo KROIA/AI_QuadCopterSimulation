@@ -23,6 +23,8 @@ class AI_Trainer: public QObject,  public QSFML::Objects::CanvasObject
         void learn();
 
 
+    public slots:
+        void toggleDisplay();
     private slots:
         void onPauseToggled();
         void onNetDisplayToggle();
@@ -32,6 +34,7 @@ class AI_Trainer: public QObject,  public QSFML::Objects::CanvasObject
         std::vector<AI_Controller*> m_agents;
         QSFML::Components::KeyPressEvent *m_pauseToggle;
         QSFML::Components::KeyPressEvent *m_netDisplayToggle;
+
 
         size_t m_cyclesCounter;
         size_t m_maxCycles;

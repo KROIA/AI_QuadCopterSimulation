@@ -1,4 +1,5 @@
 #include "AI_trainer.h"
+#include "canvas/CanvasSettings.h"
 
 AI_Trainer::AI_Trainer(const std::string &name,
                         CanvasObject *parent)
@@ -54,7 +55,7 @@ void AI_Trainer::setup()
     }
 
     m_geneticNet = new NeuronalNet::GeneticNet(agentCount);
-    m_geneticNet->setDimensions(inputCount, 2, 15 , 2);
+    m_geneticNet->setDimensions(inputCount, 1, 10 , 2);
     m_geneticNet->setActivation(NeuronalNet::Activation::sigmoid);
     m_geneticNet->setMutationChance(1);
     m_geneticNet->setMutationFactor(0.1);
@@ -106,6 +107,15 @@ void AI_Trainer::learn()
     average /= (float)m_agents.size();
     qDebug() <<average;
     m_geneticNet->learn(scores);
+}
+void AI_Trainer::toggleDisplay()
+{
+    if(getCanvasParent())
+    {
+        QSFML::CanvasSettings::UpdateControlls controlls =  getCanvasParent()->getUpdateControlls();
+        controlls.enablePaintLoop = !controlls.enablePaintLoop;
+        getCanvasParent()->setUpdateControlls(controlls);
+    }
 }
 void AI_Trainer::onPauseToggled()
 {

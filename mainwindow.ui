@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1277</width>
+    <height>515</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,16 +16,61 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QWidget" name="ai_viewport" native="true">
+     <widget class="QWidget" name="controllWidget" native="true">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>0</height>
+        <height>100</height>
        </size>
       </property>
+      <widget class="QPushButton" name="toggleDisplay_pushButton">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Toggle Display</string>
+       </property>
+      </widget>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>10</y>
+         <width>171</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QSlider" name="targetFrameTimer_slider">
+          <property name="maximum">
+           <number>1000</number>
+          </property>
+          <property name="pageStep">
+           <number>1</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="targetFrameTime_label">
+          <property name="text">
+           <string>frameTime</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
     <item>
@@ -38,7 +83,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1277</width>
      <height>21</height>
     </rect>
    </property>

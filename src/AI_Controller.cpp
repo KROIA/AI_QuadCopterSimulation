@@ -98,7 +98,7 @@ void AI_Controller::update()
         processOutputVector(m_net->getOutputVector());
         m_score += calculateDeltaScore();
         if(m_copter->getGroundWasHit())
-            m_score *= 0.5;
+            m_score *= 0.2;
     }
    // else
     {
@@ -109,7 +109,9 @@ void AI_Controller::update()
 }
 std::vector<float> AI_Controller::getInputVector()
 {
-    float angleError   = getAngleError();
+    float angleError1   = getAngleError()-1;
+    float angleError2 = getBounded(angleError1*5);
+    float angleError3 = getBounded(angleError2*5);
     //float heightError  = 600
     float heightDifference = m_copter->getHeight() - m_targetHeight;
     float heightError1 = getBounded(heightDifference * 0.001);
@@ -123,8 +125,11 @@ std::vector<float> AI_Controller::getInputVector()
     Force acceleration = m_copter->getAcceleration();
     float xAcceleration = acceleration.getForceVector().x * 0.1;
     float yAcceleration = acceleration.getForceVector().y * 0.1;
-    float rotationalAcceleration = acceleration.getTorque() *0.01;
+    float rotationalAcceleration1 = acceleration.getTorque() *0.01;
+    float rotationalAcceleration2 = getBounded(rotationalAcceleration1*2);
+    float rotationalAcceleration3 = getBounded(rotationalAcceleration2*2);
     float accelerationValue = acceleration.getForce() * 0.1;
+
 
     Force speed = m_copter->getSpeed();
     float xSpeed1 = speed.getForceVector().x *0.01;
@@ -137,32 +142,38 @@ std::vector<float> AI_Controller::getInputVector()
     float speedValue = speed.getForce() * 0.01;
 
     std::vector<float> inputs{
-        angleError,
-        heightError1,
-        heightError2,
-        heightError3,
+        angleError1,
+        angleError2,
+        angleError3,
+
+    //    heightError2,
+    //    heightError3,
         //heightError1*heightError1,
         //heightError2*heightError2,
         //heightError3*heightError3,
-        xOffset1,
-        xOffset2,
-        xOffset3,
+
+       // xOffset2,
+       // xOffset3,
         //yOffset,
         //xAcceleration,
         //xAcceleration*xAcceleration*xAcceleration,
         //yAcceleration,
         //yAcceleration*yAcceleration*yAcceleration,
-        //rotationalAcceleration,
+        rotationalAcceleration1,
+        rotationalAcceleration2,
+        rotationalAcceleration3,
         //rotationalAcceleration*rotationalAcceleration*rotationalAcceleration,
         accelerationValue,
+        heightError1,
+        //xOffset1,
         xSpeed1,
         xSpeed2,
-        xSpeed3,
+       // xSpeed3,
         ySpeed1,
         ySpeed2,
-        ySpeed3,
+       // ySpeed3,
         //ySpeed,
-        speedValue,
+        //speedValue,
         rotationalSpeed
     };
 
@@ -180,8 +191,8 @@ std::vector<float> AI_Controller::getInputVector()
 }
 void AI_Controller::processOutputVector(const NeuronalNet::SignalVector &out)
 {
-    float signalOffset = 0;
-    float signalMultiplyer = 15;
+    float signalOffset = +0.0;
+    float signalMultiplyer = 10;
 
     float leftMotor  = (out[0] + signalOffset) * signalMultiplyer;
     float rightMotor = (out[1] + signalOffset) * signalMultiplyer;
@@ -233,7 +244,7 @@ float AI_Controller::calculateDeltaScore()
 
     float angleScore   = getAngleError();
     float accelerationScore = 1+NET_ACTIVATION_GAUSSIAN(m_copter->getAcceleration().getForce());
-    float velocityScore = 1+NET_ACTIVATION_GAUSSIAN(m_copter->getSpeed().getForce()*0.1);
+    float velocityScore = 1+NET_ACTIVATION_GAUSSIAN(m_copter->getSpeed().getForce());
     //qDebug() <<accelerationScore << " " <<m_copter->getAcceleration().getForce();
 
     if(heightScore < 0)
@@ -246,8 +257,8 @@ float AI_Controller::calculateDeltaScore()
         angleScore = 0;
 
     //return angleScore;
-    //return accelerationScore*accelerationScore + velocityScore*velocityScore*0.1 + angleScore + heightScore*3;
-    return heightScore + xPosCore /*+ yPosCore */+ angleScore + accelerationScore*accelerationScore;
+    //return accelerationScore + velocityScore + angleScore + heightScore*3;
+    return heightScore /*+ xPosCore *//*+ yPosCore */+ angleScore*5 /*+ accelerationScore*/;
 }
 float AI_Controller::getBounded(float value, float min, float max)
 {
