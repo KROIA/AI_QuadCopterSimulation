@@ -21,6 +21,8 @@ public:
 
     void setISetting(float i);
     float getISetting() const;
+    void setIBoundry(float radius);
+    float getIBoundry() const;
 
     void setDSetting(float d);
     float getDSetting() const;
@@ -54,6 +56,7 @@ private:
     float m_iSetting;
     float m_dSetting;
     float m_d1Setting;
+    float m_iBounrdy;
 
     float m_p;
     float m_i;

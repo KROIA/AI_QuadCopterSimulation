@@ -31,14 +31,17 @@ PID_Controller::PID_Controller(const std::string &name,
     m_anglePID = new PID();
     m_anglePID->setChartPointCount(1000);
     m_anglePID->setChartSize(sf::Vector2f(80,100));
+    m_anglePID->setIBoundry(10);
     addChild(m_anglePID);
     m_heightPID = new PID();
     m_heightPID->setChartPointCount(1000);
     m_heightPID->setChartSize(sf::Vector2f(80,100));
+    m_heightPID->setIBoundry(10);
     addChild(m_heightPID);
     m_horizontalPID = new PID();
     m_horizontalPID->setChartPointCount(1000);
     m_horizontalPID->setChartSize(sf::Vector2f(80,100));
+    m_horizontalPID->setIBoundry(10);
     addChild(m_horizontalPID);
 
   //  m_pidLeft.set(1,1,1);

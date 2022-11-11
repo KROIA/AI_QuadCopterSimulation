@@ -35,7 +35,7 @@ PID::PID(const std::string &name,
 
 
 
-
+    m_iBounrdy = 100000;
 
     setChartPointCount(100);
 }
@@ -81,6 +81,14 @@ void PID::setISetting(float i)
 float PID::getISetting() const
 {
     return m_iSetting;
+}
+void PID::setIBoundry(float radius)
+{
+    m_iBounrdy = radius;
+}
+float PID::getIBoundry() const
+{
+    return m_iBounrdy;
 }
 
 void PID::setDSetting(float d)
@@ -128,6 +136,11 @@ float PID::calculate(float input)
 {
     m_p = m_pSetting * input;
     m_i += m_iSetting * input * m_deltaT;
+    if(m_i > m_iBounrdy)
+        m_i = m_iBounrdy;
+    else if(m_i < -m_iBounrdy)
+        m_i = -m_iBounrdy;
+
     float lastD = m_d;
     m_d = m_dSetting * (input - m_input) / m_deltaT;
     m_d1 = m_d1Setting * (m_d - lastD) / m_deltaT;
