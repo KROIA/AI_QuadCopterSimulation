@@ -45,7 +45,8 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
         void onLeftKeyRising();
         void onRightKeyRising();
 
-        void onNoiseKeyPressed();
+        void onTorqueRKeyPressed();
+        void onTorqueLKeyPressed();
 
     private:
         Force getCenteredForce();
@@ -57,7 +58,8 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
 
         QSFML::Components::KeyPressEvent *m_leftKey;
         QSFML::Components::KeyPressEvent *m_rightKey;
-        QSFML::Components::KeyPressEvent *m_noiseKey;
+        QSFML::Components::KeyPressEvent *m_torqueRightKey;
+        QSFML::Components::KeyPressEvent *m_torqueLeftKey;
 
         QuadCopterFrame2D *m_frame;
         Motor2D *m_motorLeft;

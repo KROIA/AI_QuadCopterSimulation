@@ -84,6 +84,12 @@ void MainWindow::setupSimulation()
         ui->heightI_slider->setValue((int)(heightPID->getISetting() / m_pidSliderScale_I));
         ui->heightD_slider->setValue((int)(heightPID->getDSetting() / m_pidSliderScale));
         ui->heightD1_slider->setValue((int)(heightPID->getD1Setting() / m_pidSliderScale));
+
+        PID *horizontalPID = m_pidCopter->getHorizontalPid();
+        ui->horizontalP_slider->setValue((int)(horizontalPID->getPSetting() / m_pidSliderScale));
+        ui->horizontalI_slider->setValue((int)(horizontalPID->getISetting() / m_pidSliderScale_I));
+        ui->horizontalD_slider->setValue((int)(horizontalPID->getDSetting() / m_pidSliderScale));
+        ui->horizontalD1_slider->setValue((int)(horizontalPID->getD1Setting() / m_pidSliderScale));
         //qDebug() << "PID "<<(int)(heightPID->getPSetting() / m_pidSliderScale);
     }
 #endif
@@ -152,6 +158,31 @@ void MainWindow::on_heightD1_slider_valueChanged(int value)
     ui->heightD1_label->setText(QString::number((float)value*m_pidSliderScale));
 }
 
+void MainWindow::on_horizontalP_slider_valueChanged(int value)
+{
+    if(!m_pidCopter) return;
+    m_pidCopter->setHorizontalPSetting((float)value*m_pidSliderScale);
+    ui->horizontalP_label->setText(QString::number((float)value*m_pidSliderScale));
+}
+void MainWindow::on_horizontalI_slider_valueChanged(int value)
+{
+    if(!m_pidCopter) return;
+    m_pidCopter->setHorizontalISetting((float)value*m_pidSliderScale_I);
+    ui->horizontalI_label->setText(QString::number((float)value*m_pidSliderScale_I));
+}
+void MainWindow::on_horizontalD_slider_valueChanged(int value)
+{
+    if(!m_pidCopter) return;
+    m_pidCopter->setHorizontalDSetting((float)value*m_pidSliderScale);
+    ui->horizontalD_label->setText(QString::number((float)value*m_pidSliderScale));
+}
+void MainWindow::on_horizontalD1_slider_valueChanged(int value)
+{
+    if(!m_pidCopter) return;
+    m_pidCopter->setHorizontalD1Setting((float)value*m_pidSliderScale);
+    ui->horizontalD1_label->setText(QString::number((float)value*m_pidSliderScale));
+}
+
 void MainWindow::on_resetPID_pushButton_clicked()
 {
     if(!m_pidCopter) return;
@@ -164,6 +195,9 @@ void MainWindow::on_reset_pushButton_clicked()
     if(!m_pidCopter) return;
     m_pidCopter->reset();
 }
+
+
+
 
 
 

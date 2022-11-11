@@ -32,12 +32,14 @@ QuadCopter2D::QuadCopter2D(const std::string &name,
 
     m_leftKey = new QSFML::Components::KeyPressEvent("LeftKey",sf::Keyboard::A);
     m_rightKey = new QSFML::Components::KeyPressEvent("RightKey",sf::Keyboard::D);
-    m_noiseKey = new QSFML::Components::KeyPressEvent("NoiseKEy",sf::Keyboard::S);
+    m_torqueRightKey = new QSFML::Components::KeyPressEvent("TorqueR",sf::Keyboard::E);
+    m_torqueLeftKey = new QSFML::Components::KeyPressEvent("TorqueL",sf::Keyboard::Q);
     connect(m_leftKey, &QSFML::Components::KeyPressEvent::fallingEdge, this, &QuadCopter2D::onLeftKeyFalling);
     connect(m_rightKey, &QSFML::Components::KeyPressEvent::fallingEdge, this, &QuadCopter2D::onRightKeyFalling);
     connect(m_leftKey, &QSFML::Components::KeyPressEvent::risingEdge, this, &QuadCopter2D::onLeftKeyRising);
     connect(m_rightKey, &QSFML::Components::KeyPressEvent::risingEdge, this, &QuadCopter2D::onRightKeyRising);
-    connect(m_noiseKey, &QSFML::Components::KeyPressEvent::down, this, &QuadCopter2D::onNoiseKeyPressed);
+    connect(m_torqueRightKey, &QSFML::Components::KeyPressEvent::down, this, &QuadCopter2D::onTorqueRKeyPressed);
+    connect(m_torqueLeftKey, &QSFML::Components::KeyPressEvent::down, this, &QuadCopter2D::onTorqueLKeyPressed);
 
     addChild(m_frame);
     addChild(m_motorLeft);
@@ -45,7 +47,8 @@ QuadCopter2D::QuadCopter2D(const std::string &name,
 
     addComponent(m_leftKey);
     addComponent(m_rightKey);
-    addComponent(m_noiseKey);
+    addComponent(m_torqueRightKey);
+    addComponent(m_torqueLeftKey);
     m_pos.setForceVector(sf::Vector2f(200,250));
     m_pos.setTorque(0);
     m_groundHeight = 600;
@@ -230,9 +233,14 @@ void QuadCopter2D::onRightKeyRising()
 {
     m_motorRight->setThrust(0);
 }
-void QuadCopter2D::onNoiseKeyPressed()
+void QuadCopter2D::onTorqueRKeyPressed()
 {
     m_noiseForce.setTorque(300);
+    m_noiseForce.setActingPoint(m_frame->getTopCenterPoint());
+}
+void QuadCopter2D::onTorqueLKeyPressed()
+{
+    m_noiseForce.setTorque(-300);
     m_noiseForce.setActingPoint(m_frame->getTopCenterPoint());
 }
 

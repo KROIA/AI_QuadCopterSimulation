@@ -34,6 +34,14 @@ class MainWindow : public QMainWindow
 
         void on_heightD1_slider_valueChanged(int value);
 
+        void on_horizontalP_slider_valueChanged(int value);
+
+        void on_horizontalI_slider_valueChanged(int value);
+
+        void on_horizontalD_slider_valueChanged(int value);
+
+        void on_horizontalD1_slider_valueChanged(int value);
+
     private:
         //void setupAIModel();
         void setupSimulation();

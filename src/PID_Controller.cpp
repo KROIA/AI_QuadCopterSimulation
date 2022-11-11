@@ -5,6 +5,7 @@ PID_Controller::PID_Controller(const std::string &name,
                                CanvasObject *parent)
 {
     m_targetHeight = 300;
+    m_targetHorizontalPos = 1000;
     m_targetAngle = -M_PI_2;
     m_startPos = sf::Vector2f(100+(rand()%1800),300);
     m_paused = false;
@@ -22,6 +23,11 @@ PID_Controller::PID_Controller(const std::string &name,
     m_anglePIDChart->setSize(sf::Vector2f(200,100));
     addChild(m_anglePIDChart);
 
+    m_horizontalPIDChart = new QSFML::Objects::LineChart();
+    m_horizontalPIDChart->setColor(sf::Color::Green);
+    m_horizontalPIDChart->setSize(sf::Vector2f(200,100));
+    addChild(m_horizontalPIDChart);
+
     m_anglePID = new PID();
     m_anglePID->setChartPointCount(1000);
     m_anglePID->setChartSize(sf::Vector2f(80,100));
@@ -30,11 +36,16 @@ PID_Controller::PID_Controller(const std::string &name,
     m_heightPID->setChartPointCount(1000);
     m_heightPID->setChartSize(sf::Vector2f(80,100));
     addChild(m_heightPID);
+    m_horizontalPID = new PID();
+    m_horizontalPID->setChartPointCount(1000);
+    m_horizontalPID->setChartSize(sf::Vector2f(80,100));
+    addChild(m_horizontalPID);
 
   //  m_pidLeft.set(1,1,1);
  //   m_pidRight.set(1,1,1);
-    m_anglePID->set(100,0.003,10,-100);
-    m_heightPID->set(-0.3,0,-8,0);
+    m_anglePID->set(100,0.003,975,0);
+    m_heightPID->set(-0.8,-0.001,-319,0);
+    m_horizontalPID->set(2.1,0,612,0);
     reset();
 }
 PID_Controller::PID_Controller(const PID_Controller &other)
@@ -71,6 +82,10 @@ PID *PID_Controller::getHeightPid()
 {
     return m_heightPID;
 }
+PID *PID_Controller::getHorizontalPid()
+{
+    return m_horizontalPID;
+}
 
 void PID_Controller::reset()
 {
@@ -78,6 +93,7 @@ void PID_Controller::reset()
     m_copter->setSpeed(Force({0,0}, {0,0}, 0));
     m_anglePIDChart->clear();
     m_heightPIDChart->clear();
+    m_horizontalPIDChart->clear();
     resetPID();
 }
 void PID_Controller::update()
@@ -86,6 +102,7 @@ void PID_Controller::update()
     //float angleError = getAngleError();
     float angleError = QSFML::VectorMath::getAngle(sf::Vector2f(1,0),m_copter->getUpVector()) - m_targetAngle;
 
+    float horizontalError = getBounded(getHorizontalError()*0.01,-500,500);
     //angleError = M_PI-angleError;
     //if(angleError > M_PI)
     //    angleError -= 2*M_PI;
@@ -93,30 +110,38 @@ void PID_Controller::update()
 
     float angleControll = m_anglePID->calculate(angleError);
     float heightControll = m_heightPID->calculate(heightError);
+    float horizontalControll = getBounded(m_horizontalPID->calculate(horizontalError), -5,5);
 
     float maxMotor = 15;
-    float leftControll =  getBounded(heightControll - angleControll,0,maxMotor);
-    float rightControll = getBounded(heightControll + angleControll,0,maxMotor);
-    qDebug() << "Motor controlls: "<<leftControll<<" "<<rightControll;
+    float leftControll =  getBounded(heightControll - angleControll - horizontalControll,0,maxMotor);
+    float rightControll = getBounded(heightControll + angleControll + horizontalControll,0,maxMotor);
+   // qDebug() << "Motor controlls: "<<leftControll<<" "<<rightControll;
     m_copter->setMotorForce(leftControll,rightControll);
 
 
     std::vector<float> anglePoints = m_anglePIDChart->getDataPoints();
     std::vector<float> heightPoints = m_heightPIDChart->getDataPoints();
+    std::vector<float> horizontalPoints = m_horizontalPIDChart->getDataPoints();
     anglePoints.push_back(angleError);
     heightPoints.push_back(heightError);
+    horizontalPoints.push_back(horizontalError);
     if(anglePoints.size() > 1000)
         anglePoints.erase(anglePoints.begin());
     if(heightPoints.size() > 1000)
         heightPoints.erase(heightPoints.begin());
+    if(horizontalPoints.size() > 1000)
+        horizontalPoints.erase(horizontalPoints.begin());
     m_anglePIDChart->setDataPoints(anglePoints);
     m_heightPIDChart->setDataPoints(heightPoints);
+    m_horizontalPIDChart->setDataPoints(horizontalPoints);
 
-    sf::Vector2f offset(100,-100);
+    sf::Vector2f offset(-100,-250);
     m_heightPIDChart->setOrigin(m_copter->getPosition()+offset);
     m_anglePIDChart->setOrigin(m_copter->getPosition()+offset);
+    m_horizontalPIDChart->setOrigin(m_copter->getPosition()+offset);
     m_anglePID->setChartPos(m_copter->getPosition() + sf::Vector2f(-100,-100));
     m_heightPID->setChartPos(m_copter->getPosition() + sf::Vector2f( 0,-100));
+    m_horizontalPID->setChartPos(m_copter->getPosition() + sf::Vector2f( 100,-100));
 
 }
 float PID_Controller::getAngleError() const
@@ -128,6 +153,10 @@ float PID_Controller::getAngleError() const
 float PID_Controller::getHeightError() const
 {
     return m_copter->getHeight() - m_targetHeight;
+}
+float PID_Controller::getHorizontalError() const
+{
+    return m_copter->getPosition().x - m_targetHorizontalPos;
 }
 
 /*
@@ -151,6 +180,7 @@ void PID_Controller::resetPID()
 {
     m_anglePID->reset();
     m_heightPID->reset();
+    m_horizontalPID->reset();
 }
 void PID_Controller::setAnglePSetting(float p)
 {
@@ -184,6 +214,23 @@ void PID_Controller::setHeightDSetting(float d)
 void PID_Controller::setHeightD1Setting(float d1)
 {
     m_heightPID->setD1Setting(d1);
+}
+
+void PID_Controller::setHorizontalPSetting(float p)
+{
+    m_horizontalPID->setPSetting(p);
+}
+void PID_Controller::setHorizontalISetting(float i)
+{
+    m_horizontalPID->setISetting(i);
+}
+void PID_Controller::setHorizontalDSetting(float d)
+{
+    m_horizontalPID->setDSetting(d);
+}
+void PID_Controller::setHorizontalD1Setting(float d1)
+{
+    m_horizontalPID->setD1Setting(d1);
 }
 float PID_Controller::getBounded(float value, float min, float max)
 {
