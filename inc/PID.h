@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SFML_EditorWidget.h"
+#include "QSFML_EditorWidget.h"
 
 
 class PID: public QSFML::Objects::CanvasObject

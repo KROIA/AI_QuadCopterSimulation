@@ -12,8 +12,8 @@ CONFIG += c++17
 
 
 
-include(Extern/Neural-net-2-graphics/Neural-net-2-graphics.pri)
-#include(../Neural-net-2-graphics/Neural-net-2-graphics.pri)
+#include(Extern/Neural-net-2-graphics/Neural-net-2-graphics.pri)
+include(../Neural-net-2-graphics/Neural-net-2-graphics.pri)
 
 inc = $$PWD/inc
 src = $$PWD/src
@@ -30,6 +30,7 @@ HEADERS += \
     inc/PID.h \
     inc/PID_Controller.h \
     inc/QuadCopter2D.h \
+    inc/QuadCopter2DKeyController.h \
     inc/QuadCopterFrame2D.h \
     inc/SimulationSettings.h
 
@@ -43,6 +44,7 @@ SOURCES += \
     src/PID.cpp \
     src/PID_Controller.cpp \
     src/QuadCopter2D.cpp \
+    src/QuadCopter2DKeyController.cpp \
     src/QuadCopterFrame2D.cpp \
     src/SimulationSettings.cpp
 

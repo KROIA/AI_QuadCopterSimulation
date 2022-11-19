@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SFML_EditorWidget.h"
+#include "QSFML_EditorWidget.h"
 
 class Force
 {
@@ -53,6 +53,7 @@ class ForcePainter: public QSFML::Components::Drawable
     public:
         ForcePainter(const std::string &name = "ForcePainter");
         ForcePainter(const ForcePainter &other);
+        ~ForcePainter();
         CLONE_FUNC(ForcePainter)
 
         void setColor(const sf::Color &color);
@@ -61,10 +62,15 @@ class ForcePainter: public QSFML::Components::Drawable
         void draw(sf::RenderTarget& target,
                   sf::RenderStates states) const override;
 
+        void updateVisuals();
+
     private:
         float m_scale;
         Force m_force;
         sf::Color m_color;
         QSFML::Components::DrawableVector m_vec;
+
+        sf::Vertex *m_torqueVerts;
+        size_t m_torqueVertsCount;
 
 };

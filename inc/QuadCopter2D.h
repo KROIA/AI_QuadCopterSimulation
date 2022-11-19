@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SFML_EditorWidget.h"
+#include "QSFML_EditorWidget.h"
 #include "Motor2D.h"
 #include "QuadCopterFrame2D.h"
 
@@ -33,13 +33,15 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
         void setSpeed(const Force &speed);
 
 
+        void setLeftMotorForce(float force);
+        void setRightMotorForce(float force);
         void setMotorForce(float left, float right);
         void setPosition(const sf::Vector2f &pos);
         void setAngle(float angle);
+        void addForce(const Force &f);
 
-    protected:
+        static const std::vector<QuadCopter2D*> &getInstances();
 
-    private slots:
         void onLeftKeyFalling();
         void onRightKeyFalling();
         void onLeftKeyRising();
@@ -52,15 +54,20 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
         void onForceDownKeyPressed();
         void onForceRightKeyPressed();
 
+    protected:
+
+    private slots:
+
+
     private:
         Force getCenteredForce();
 
-        QuadCopter2DPainter *m_painter;
+        //QuadCopter2DPainter *m_painter;
         ForcePainter *m_forceVec;
         ForcePainter *m_accelerationVec;
         ForcePainter *m_velocityVec;
 
-        QSFML::Components::KeyPressEvent *m_leftKey;
+      /*  QSFML::Components::KeyPressEvent *m_leftKey;
         QSFML::Components::KeyPressEvent *m_rightKey;
 
         QSFML::Components::KeyPressEvent *m_torqueRightKey;
@@ -68,7 +75,7 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
         QSFML::Components::KeyPressEvent *m_forceUpKey;
         QSFML::Components::KeyPressEvent *m_forceDownKey;
         QSFML::Components::KeyPressEvent *m_forceLeftKey;
-        QSFML::Components::KeyPressEvent *m_forceRightKey;
+        QSFML::Components::KeyPressEvent *m_forceRightKey;*/
         float m_keyHorizontalForce;
         float m_keyVerticalForce;
         float m_keyTorque;
@@ -89,7 +96,9 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
 
         Force m_noiseForce;
 
-        class QuadCopter2DPainter: public QSFML::Components::Drawable
+        static std::vector<QuadCopter2D*> m_instances;
+
+        /*class QuadCopter2DPainter: public QSFML::Components::Drawable
         {
             public:
                 QuadCopter2DPainter(const std::string &name = "QuadCopter2DPainter");
@@ -99,6 +108,8 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
                 void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
                 QuadCopter2D* m_copter;
-        };
+        };*/
 };
+
+
 

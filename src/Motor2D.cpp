@@ -6,7 +6,7 @@ Motor2D::Motor2D(const std::string &name,
     : CanvasObject(name, parent)
 {
     m_painter = new Motor2DPainter();
-    m_painter->m_copter = this;
+    m_painter->setMotor(this);
     addComponent(m_painter);
 
     m_forceVec = new ForcePainter();
@@ -23,7 +23,7 @@ Motor2D::Motor2D(const Motor2D &other)
     : CanvasObject(other)
 {
     m_painter = new Motor2DPainter();
-    m_painter->m_copter = this;
+    m_painter->setMotor(this);
     addComponent(m_painter);
 
     m_forceVec = new ForcePainter();
@@ -57,6 +57,7 @@ void Motor2D::update()
     m_BBR = origin - leftDir * m_width/2.f;
     m_BTR = m_BBR + upDir * m_height;
     m_forceVec->setForce(getThrustVector());
+    m_painter->updatePos();
 }
 
 
@@ -86,6 +87,7 @@ const sf::Vector2f &Motor2D::getForceDirection() const
 void Motor2D::setColor(const sf::Color &color)
 {
     m_color = color;
+    m_painter->updateColor();
 }
 const sf::Color &Motor2D::getColor() const
 {
@@ -114,30 +116,28 @@ Motor2D::Motor2DPainter::Motor2DPainter(const Motor2DPainter &other)
     : Drawable(other)
 {
     m_copter = nullptr;
+
 }
 Motor2D::Motor2DPainter::~Motor2DPainter()
 {
 }
-
+void Motor2D::Motor2DPainter::setMotor(Motor2D *m)
+{
+    m_copter = m;
+    updateColor();
+}
+void Motor2D::Motor2DPainter::updateColor()
+{
+    for(size_t i=0; i<5; ++i)
+        m_body[i].color = m_copter->m_color;
+}
 void Motor2D::Motor2DPainter::draw(sf::RenderTarget& target,
                                    sf::RenderStates states) const
 {
     if(!m_copter)
         return;
 
-    //Body
-    sf::Vertex body[]
-    {
-        sf::Vertex(m_copter->m_BBL),
-        sf::Vertex(m_copter->m_BTL),
-        sf::Vertex(m_copter->m_BTR),
-        sf::Vertex(m_copter->m_BBR),
-        sf::Vertex(m_copter->m_BBL)
-    };
-
-    for(size_t i=0; i<5; ++i)
-        body[i].color = m_copter->m_color;
-    target.draw(body, 5, sf::LinesStrip);
+    target.draw(m_body, 5, sf::LinesStrip);
 
 
 }

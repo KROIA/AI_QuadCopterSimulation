@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 
 #include "AI_trainer.h"
+#include "QuadCopter2DKeyController.h"
+
 
 using namespace QSFML;
 using namespace QSFML::Objects;
@@ -41,12 +43,13 @@ MainWindow::~MainWindow()
 }*/
 void MainWindow::setupSimulation()
 {
-//#define AI_CONTROLL
+#define AI_CONTROLL
     CanvasSettings settings;
     //settings.timing.frameTime = 100;
     //settings.layout.autoAjustSize = false;
     settings.layout.fixedSize = sf::Vector2u(300,100);
     settings.contextSettings.antialiasingLevel = 8;
+    settings.updateControlls.enableMultithreading = true;
 #ifdef AI_CONTROLL
     settings.timing.frameTime = 0;
 #endif
@@ -59,6 +62,7 @@ void MainWindow::setupSimulation()
     DefaultEditor *defaultEditor = new DefaultEditor("Editor",sf::Vector2f(2000,600));
 
     m_simulationCanvas->addObject(defaultEditor);
+    m_simulationCanvas->addObject(new QuadCopter2DKeyController());
 
 #ifdef AI_CONTROLL
     AI_Trainer *trainer = new AI_Trainer();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SFML_EditorWidget.h"
+#include "QSFML_EditorWidget.h"
 #include "QuadCopter2D.h"
 #include "neuronalNet.h"
 #include "AI_Controller.h"
@@ -30,6 +30,8 @@ class AI_Trainer: public QObject,  public QSFML::Objects::CanvasObject
         void onNetDisplayToggle();
 
     private:
+        void onCanvasParentChange(QSFML::Canvas *oldParent, QSFML::Canvas *newParent) override;
+
         NeuronalNet::GeneticNet *m_geneticNet;
         std::vector<AI_Controller*> m_agents;
         QSFML::Components::KeyPressEvent *m_pauseToggle;

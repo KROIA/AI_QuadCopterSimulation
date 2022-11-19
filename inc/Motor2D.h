@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SFML_EditorWidget.h"
+#include "QSFML_EditorWidget.h"
 #include "Force.h"
 
 class Motor2D : public QSFML::Objects::CanvasObject
@@ -58,10 +58,25 @@ class Motor2D : public QSFML::Objects::CanvasObject
                 Motor2DPainter(const Motor2DPainter &other);
                 ~Motor2DPainter();
 
+                void setMotor(Motor2D *m);
+                void updateColor();
+                inline void updatePos()
+                {
+                    if(!m_copter)
+                        return;
+
+                    m_body[0].position = m_copter->m_BBL;
+                    m_body[1].position = m_copter->m_BBR;
+                    m_body[2].position = m_copter->m_BTR;
+                    m_body[3].position = m_copter->m_BTL;
+                    m_body[4].position = m_copter->m_BBL;
+                }
+
                 void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+            private:
                 Motor2D* m_copter;
-
+                sf::Vertex m_body[5];
         };
 };
 

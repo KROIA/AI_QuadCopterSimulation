@@ -134,8 +134,10 @@ Force Force::getSum(const std::vector<Force> &forcefield,
 ForcePainter::ForcePainter(const std::string &name)
     : Drawable(name)
 {
-    setColor(sf::Color::Red);
     m_scale = 1;
+    m_torqueVertsCount = 0;
+    m_torqueVerts = nullptr;
+    setColor(sf::Color::Red);
 }
 ForcePainter::ForcePainter(const ForcePainter &other)
     : Drawable(other)
@@ -143,11 +145,21 @@ ForcePainter::ForcePainter(const ForcePainter &other)
     m_force = other.m_force;
     m_scale = other.m_scale;
     m_color = other.m_color;
+    m_torqueVertsCount = 0;
+    m_torqueVerts = nullptr;
+}
+ForcePainter::~ForcePainter()
+{
+    delete[] m_torqueVerts;
 }
 void ForcePainter::setColor(const sf::Color &color)
 {
     m_color = color;
     m_vec.setColor(m_color);
+    for(size_t i=0; i<m_torqueVertsCount; ++i)
+    {
+        m_torqueVerts[i].color = m_color;
+    }
 }
 void ForcePainter::setScale(float scale)
 {
@@ -158,34 +170,49 @@ void ForcePainter::setForce(const Force &force)
 {
     m_force = force;
     m_vec.setPoints(m_force.getActingPoint(), m_force.getActingPoint() + m_force.getForceVector()*m_scale);
+    updateVisuals();
 }
 void ForcePainter::draw(sf::RenderTarget& target,
                         sf::RenderStates states) const
 {
     m_vec.draw(target, states);
-
+    if(m_torqueVerts)
+        target.draw(m_torqueVerts, m_torqueVertsCount, sf::LinesStrip);
+}
+void ForcePainter::updateVisuals()
+{
     // Torque
     if(m_force.getTorque() == 0)
+    {
+        delete[] m_torqueVerts;
+        m_torqueVerts = nullptr;
+        m_torqueVertsCount = 0;
         return;
+    }
 
     float radius = 2;
     float radiusOffset = 0.3;
 
     float deltaAngle = m_force.getTorque()*0.001*m_scale;
     size_t resolution = 10 + abs(deltaAngle*10);
-    sf::Vertex *vertecies = new sf::Vertex[resolution];
+    if(resolution != m_torqueVertsCount)
+    {
+        delete[] m_torqueVerts;
+        m_torqueVerts = new sf::Vertex[resolution];
+        m_torqueVertsCount = resolution;
+        for(size_t i=0; i<m_torqueVertsCount; ++i)
+        {
+            m_torqueVerts[i].color = m_color;
+        }
+    }
     sf::Vector2f pos = m_force.getActingPoint();
     float angle = 0;
 
-    deltaAngle /= (float)resolution;
-    for(size_t i=0; i<resolution; ++i)
+    deltaAngle /= (float)m_torqueVertsCount;
+    for(size_t i=0; i<m_torqueVertsCount; ++i)
     {
-        vertecies[i].color = m_color;
         sf::Vector2f f = QSFML::VectorMath::getRotated(sf::Vector2f(1,0) * (radius + radiusOffset*i),angle);
-        vertecies[i].position = pos + f;
+        m_torqueVerts[i].position = pos + f;
         angle += deltaAngle;
-        //qDebug() << "angle["<<i<<"] = "<<angle << " torque: "<<m_force.getTorque();
     }
-    target.draw(vertecies, resolution, sf::LinesStrip);
-    delete[] vertecies;
 }

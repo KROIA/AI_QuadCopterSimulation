@@ -41,7 +41,7 @@ void AI_Trainer::setup()
     addComponent(m_netDisplayToggle);
 
     m_paused = false;
-    m_maxCycles = 200;
+    m_maxCycles = 20000;
 
     size_t agentCount = 100;
     size_t inputCount = 0;
@@ -51,16 +51,25 @@ void AI_Trainer::setup()
         AI_Controller* controller = new AI_Controller("Controller_"+std::to_string(i));
         if(inputCount == 0)
             inputCount = controller->getInputSize();
-        addChild(controller);
+
+        //addChild(controller);
         m_agents.push_back(controller);
     }
 
+
     m_geneticNet = new NeuronalNet::GeneticNet(agentCount);
-    m_geneticNet->setDimensions(inputCount, 1, 10 , 2);
-    m_geneticNet->setActivation(NeuronalNet::Activation::sigmoid);
-    m_geneticNet->setMutationChance(1);
-    m_geneticNet->setMutationFactor(0.1);
-    m_geneticNet->build();
+    NeuronalNet::NetSerializer serializer;
+    serializer.setFilePath("save.net");
+    if(!serializer.readFromFile(m_geneticNet))
+    {
+        m_geneticNet->setDimensions(inputCount, 1, 10 , 2);
+        m_geneticNet->setActivation(NeuronalNet::Activation::sigmoid);
+        m_geneticNet->setMutationChance(1);
+        m_geneticNet->setMutationFactor(0.1);
+        m_geneticNet->build();
+    }
+
+
 
     for(size_t i=0; i<agentCount; ++i)
     {
@@ -93,6 +102,9 @@ void AI_Trainer::update()
     if(m_cyclesCounter/SimulationSettings::getDeltaT() >= m_maxCycles)
     {
         learn();
+        NeuronalNet::NetSerializer serializer;
+        serializer.setFilePath("save.net");
+        serializer.saveToFile(m_geneticNet);
         reset();
     }
 }
@@ -131,4 +143,22 @@ void AI_Trainer::onNetDisplayToggle()
     }*/
     m_agents[0]->enableNetDisplay(m_displayNets);
 
+}
+void AI_Trainer::onCanvasParentChange(QSFML::Canvas *oldParent,
+                                      QSFML::Canvas *newParent)
+{
+    if(oldParent)
+    {
+        for(size_t i=0; i<m_agents.size(); ++i)
+        {
+            oldParent->removeObject(m_agents[i]);
+        }
+    }
+    if(newParent)
+    {
+        for(size_t i=0; i<m_agents.size(); ++i)
+        {
+            newParent->addObject(m_agents[i]);
+        }
+    }
 }
