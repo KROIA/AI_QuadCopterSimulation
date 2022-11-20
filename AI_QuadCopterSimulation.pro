@@ -13,7 +13,7 @@ CONFIG += c++17
 
 
 #include(Extern/Neural-net-2-graphics/Neural-net-2-graphics.pri)
-include(../Neural-net-2-graphics/Neural-net-2-graphics.pri)
+include(../Neuronal-net-2-graphics/Neuronal-net-2-graphics.pri)
 
 inc = $$PWD/inc
 src = $$PWD/src
