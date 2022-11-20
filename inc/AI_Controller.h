@@ -21,6 +21,7 @@ class AI_Controller: public QObject, public QSFML::Objects::CanvasObject
         void enableNetDisplay(bool enable);
 
         void reset();
+        void resetOnNextLoop();
         void update() override;
         std::vector<float> getInputVector();
         void processOutputVector(const NeuronalNet::SignalVector &out);
@@ -64,6 +65,8 @@ class AI_Controller: public QObject, public QSFML::Objects::CanvasObject
         float m_targetAngle;
 
         bool m_paused;
+        bool m_threadCalledResetForNextLoop;
+        size_t m_resetUpdateIndex;
         //bool m_aiControlled;
 
         //sf::Vector2f m_keyControlledPos;

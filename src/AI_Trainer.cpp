@@ -82,21 +82,14 @@ void AI_Trainer::reset()
     m_cyclesCounter = 0;
     for(size_t i=0; i<m_agents.size(); ++i)
     {
-        m_agents[i]->reset();
+        m_agents[i]->resetOnNextLoop();
     }
 }
 void AI_Trainer::update()
 {
     if(m_paused)
         return;
-    /*for(size_t j=0; j<50; ++j)
-    {
-        for(size_t i=0; i<m_agents.size(); ++i)
-        {
-            m_agents[i]->update();
-        }
 
-    }*/
 
     ++m_cyclesCounter;
     if(m_cyclesCounter/SimulationSettings::getDeltaT() >= m_maxCycles)

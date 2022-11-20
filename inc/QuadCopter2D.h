@@ -20,6 +20,7 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
         void setPause(bool pause);
 
         void update() override;
+        void updateCopter();
         void checkCollision();
 
         bool getGroundWasHit() const;
@@ -97,6 +98,7 @@ class QuadCopter2D: public QObject, public QSFML::Objects::CanvasObject
         Force m_noiseForce;
 
         static std::vector<QuadCopter2D*> m_instances;
+
 
         /*class QuadCopter2DPainter: public QSFML::Components::Drawable
         {

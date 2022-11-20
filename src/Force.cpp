@@ -150,7 +150,10 @@ ForcePainter::ForcePainter(const ForcePainter &other)
 }
 ForcePainter::~ForcePainter()
 {
-    delete[] m_torqueVerts;
+    sf::Vertex * tmp = m_torqueVerts;
+    m_torqueVerts = nullptr;
+    m_torqueVertsCount = 0;
+    delete[] tmp;
 }
 void ForcePainter::setColor(const sf::Color &color)
 {
@@ -184,9 +187,11 @@ void ForcePainter::updateVisuals()
     // Torque
     if(m_force.getTorque() == 0)
     {
-        delete[] m_torqueVerts;
+        sf::Vertex * tmp = m_torqueVerts;
         m_torqueVerts = nullptr;
         m_torqueVertsCount = 0;
+        delete[] tmp;
+
         return;
     }
 
@@ -197,7 +202,11 @@ void ForcePainter::updateVisuals()
     size_t resolution = 10 + abs(deltaAngle*10);
     if(resolution != m_torqueVertsCount)
     {
-        delete[] m_torqueVerts;
+        sf::Vertex * tmp = m_torqueVerts;
+        m_torqueVerts = nullptr;
+        m_torqueVertsCount = 0;
+        delete[] tmp;
+
         m_torqueVerts = new sf::Vertex[resolution];
         m_torqueVertsCount = resolution;
         for(size_t i=0; i<m_torqueVertsCount; ++i)

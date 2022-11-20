@@ -146,6 +146,7 @@ void PID_Controller::update()
     m_heightPID->setChartPos(m_copter->getPosition() + sf::Vector2f( 0,-100));
     m_horizontalPID->setChartPos(m_copter->getPosition() + sf::Vector2f( 100,-100));
 
+    m_copter->updateCopter();
 }
 float PID_Controller::getAngleError() const
 {

@@ -86,16 +86,31 @@ void AI_Controller::reset()
     m_copter->setSpeed(Force({0,0}, {0,0}, 0));
     setScore(0);
 }
+void AI_Controller::resetOnNextLoop()
+{
+    m_threadCalledResetForNextLoop = true;
+    m_resetUpdateIndex = getUpdateCount() + 1;
+}
 void AI_Controller::update()
 {
     if(!m_net || m_paused)
         return;
+    if(m_threadCalledResetForNextLoop)
+    {
+        if(m_resetUpdateIndex == getUpdateCount())
+        {
+            m_threadCalledResetForNextLoop = false;
+            m_resetUpdateIndex = 0;
+            reset();
+        }
+    }
 
     //if(m_aiControlled)
     {
         m_net->setInputVector(getInputVector());
         m_net->calculate();
         processOutputVector(m_net->getOutputVector());
+        m_copter->updateCopter();
         m_score += calculateDeltaScore();
         if(m_copter->getGroundWasHit())
             m_score *= 0.2;
@@ -146,8 +161,9 @@ std::vector<float> AI_Controller::getInputVector()
         angleError2,
         angleError3,
 
-    //    heightError2,
-    //    heightError3,
+        heightError1,
+        heightError2,
+        heightError3,
         //heightError1*heightError1,
         //heightError2*heightError2,
         //heightError3*heightError3,
@@ -159,12 +175,12 @@ std::vector<float> AI_Controller::getInputVector()
         //xAcceleration*xAcceleration*xAcceleration,
         //yAcceleration,
         //yAcceleration*yAcceleration*yAcceleration,
-        rotationalAcceleration1,
-        rotationalAcceleration2,
-        rotationalAcceleration3,
+      //  rotationalAcceleration1,
+      //  rotationalAcceleration2,
+      //  rotationalAcceleration3,
         //rotationalAcceleration*rotationalAcceleration*rotationalAcceleration,
-        accelerationValue,
-        heightError1,
+      //  accelerationValue,
+
         //xOffset1,
         xSpeed1,
         xSpeed2,

@@ -1,7 +1,6 @@
 #include "QuadCopter2D.h"
 #include "SimulationSettings.h"
 
-
 std::vector<QuadCopter2D*> QuadCopter2D::m_instances;
 
 QuadCopter2D::QuadCopter2D(const std::string &name,
@@ -9,12 +8,9 @@ QuadCopter2D::QuadCopter2D(const std::string &name,
     : CanvasObject(name, parent)
 {
     m_instances.push_back(this);
-    //m_painter = new QuadCopter2DPainter();
-    //m_painter->m_copter = this;
-    //addComponent(m_painter);
 
     m_forceVec = new ForcePainter();
-    //m_forceVec->setColor(sf::Color::Red);
+
     m_forceVec->setScale(10);
     addComponent(m_forceVec);
 
@@ -32,37 +28,10 @@ QuadCopter2D::QuadCopter2D(const std::string &name,
     m_motorLeft = new Motor2D("MotorLeft");
     m_motorRight = new Motor2D("MotorRight");
 
-  /*  m_leftKey = new QSFML::Components::KeyPressEvent("LeftKey",sf::Keyboard::Y);
-    m_rightKey = new QSFML::Components::KeyPressEvent("RightKey",sf::Keyboard::C);
-    m_torqueRightKey = new QSFML::Components::KeyPressEvent("TorqueR",sf::Keyboard::E);
-    m_torqueLeftKey = new QSFML::Components::KeyPressEvent("TorqueL",sf::Keyboard::Q);
-    m_forceUpKey = new QSFML::Components::KeyPressEvent("FUpKey",sf::Keyboard::W);
-    m_forceDownKey = new QSFML::Components::KeyPressEvent("FDownKey",sf::Keyboard::S);
-    m_forceLeftKey = new QSFML::Components::KeyPressEvent("FLeftKey",sf::Keyboard::A);
-    m_forceRightKey = new QSFML::Components::KeyPressEvent("FRightKey",sf::Keyboard::D);
-    connect(m_leftKey, &QSFML::Components::KeyPressEvent::fallingEdge, this, &QuadCopter2D::onLeftKeyFalling);
-    connect(m_rightKey, &QSFML::Components::KeyPressEvent::fallingEdge, this, &QuadCopter2D::onRightKeyFalling);
-    connect(m_leftKey, &QSFML::Components::KeyPressEvent::risingEdge, this, &QuadCopter2D::onLeftKeyRising);
-    connect(m_rightKey, &QSFML::Components::KeyPressEvent::risingEdge, this, &QuadCopter2D::onRightKeyRising);
-    connect(m_torqueRightKey, &QSFML::Components::KeyPressEvent::down, this, &QuadCopter2D::onTorqueRKeyPressed);
-    connect(m_torqueLeftKey, &QSFML::Components::KeyPressEvent::down, this, &QuadCopter2D::onTorqueLKeyPressed);
-    connect(m_forceUpKey, &QSFML::Components::KeyPressEvent::down, this, &QuadCopter2D::onForceUpKeyPressed);
-    connect(m_forceDownKey, &QSFML::Components::KeyPressEvent::down, this, &QuadCopter2D::onForceDownKeyPressed);
-    connect(m_forceLeftKey, &QSFML::Components::KeyPressEvent::down, this, &QuadCopter2D::onForceLeftKeyPressed);
-    connect(m_forceRightKey, &QSFML::Components::KeyPressEvent::down, this, &QuadCopter2D::onForceRightKeyPressed);
-*/
     addChild(m_frame);
     addChild(m_motorLeft);
     addChild(m_motorRight);
 
- /*   addComponent(m_leftKey);
-    addComponent(m_rightKey);
-    addComponent(m_torqueRightKey);
-    addComponent(m_torqueLeftKey);
-    addComponent(m_forceUpKey);
-    addComponent(m_forceDownKey);
-    addComponent(m_forceLeftKey);
-    addComponent(m_forceRightKey);*/
     m_pos.setForceVector(sf::Vector2f(200,250));
     m_pos.setTorque(0);
     m_groundHeight = 600;
@@ -80,13 +49,9 @@ QuadCopter2D::QuadCopter2D(const std::string &name,
 QuadCopter2D::QuadCopter2D(const QuadCopter2D &other)
     : CanvasObject(other)
 {
-    /*m_painter = new QuadCopter2DPainter();
-    m_painter->m_copter = this;
-    addComponent(m_painter);*/
 
     m_instances.push_back(this);
     m_forceVec = new ForcePainter();
-    //m_forceVec->setColor(sf::Color::Red);
     addComponent(m_forceVec);
 
     m_frame = new QuadCopterFrame2D("Frame");
@@ -115,6 +80,10 @@ void QuadCopter2D::setPause(bool pause)
     m_paused = pause;
 }
 void QuadCopter2D::update()
+{
+
+}
+void QuadCopter2D::updateCopter()
 {
     if(m_paused)
         return;
